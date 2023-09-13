@@ -25,6 +25,7 @@ module.exports = {
         ecmaVersion: 'latest',
     },
     rules: {
+        'import/prefer-default-export': 'off',
         indent: [
             'error',
             4,
@@ -41,5 +42,7 @@ module.exports = {
             ignoreTemplateLiterals: true,
             ignoreRegExpLiterals: true,
         }],
+        'no-await-in-loop': 'off',
+        'no-plusplus': 'off',
     },
 };
