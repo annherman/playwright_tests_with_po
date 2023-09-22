@@ -9,8 +9,8 @@ export class CheckoutStepTwoPage extends BaseSwagLabPage {
 
     get finishBtn() { return this.page.locator('#finish'); }
 
-    async getCartItemInfoById(id) {
-        const item = this.cartItems.nth(id);
+    async getCartItemInfoByIndex(index) {
+        const item = this.cartItems.nth(index);
         const name = await item.locator('.inventory_item_name').textContent();
         const desc = await item.locator('.inventory_item_desc').textContent();
         const price = await item.locator('.inventory_item_price').textContent();
@@ -18,7 +18,7 @@ export class CheckoutStepTwoPage extends BaseSwagLabPage {
         return {
             name,
             desc,
-            price,
+            price: parseFloat(price.slice(1)),
         };
     }
 
@@ -28,7 +28,8 @@ export class CheckoutStepTwoPage extends BaseSwagLabPage {
             const price = await i.locator('.inventory_item_price').textContent();
             return parseFloat(price.slice(1));
         }));
-        return prices.reduce((a, i) => a + i, await this.getTax());
+        const totalPrice = prices.reduce((a, i) => a + i, await this.getTax());
+        return totalPrice.toFixed(2).toString();
     }
 
     async getItemsTotalPrice() {
@@ -43,6 +44,6 @@ export class CheckoutStepTwoPage extends BaseSwagLabPage {
 
     async getTotalPrice() {
         const totalPriceText = await this.page.locator('.summary_total_label').textContent();
-        return parseFloat(totalPriceText.match(/[+-]?\d+(\.\d+)?/g));
+        return parseFloat(totalPriceText.match(/[+-]?\d+(\.\d+)?/g)).toString();
     }
 }

@@ -1,6 +1,6 @@
 // @ts-check
-const { expect } = require('@playwright/test');
-const { test } = require('../fixture');
+import { expect } from '@playwright/test';
+import { test } from '../fixture';
 
 test.describe('', () => {
     test('Perform login', async ({ loginPage, inventoryPage }) => {
@@ -15,7 +15,7 @@ test.describe('', () => {
     test('Add and remove product from the cart', async ({ loginPage, inventoryPage, shopingCartPage }) => {
         await loginPage.navigate();
         await loginPage.performLogin('standard_user', 'secret_sauce');
-        await inventoryPage.addItemToCartById(0);
+        await inventoryPage.addItemToCartByIndex(0);
         expect(await inventoryPage.getNumberOfItemsInCart()).toBe('1');
 
         await inventoryPage.shopingCart.click();

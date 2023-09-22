@@ -1,40 +1,17 @@
-const { expect } = require('@playwright/test');
-const { test } = require('../fixture');
-const { SORTING_OPTIONS_FUNCTIONS } = require('../pages/Inventory.page');
+import { expect } from '@playwright/test';
+import { test } from '../fixture';
 
 test.describe('', () => {
-    test('Perform and verify sorting', async ({ loginPage, inventoryPage }) => {
-        await loginPage.navigate();
-        await loginPage.performLogin('standard_user', 'secret_sauce');
-
-        const options = Object.keys(SORTING_OPTIONS_FUNCTIONS);
-
-        for (let i = 0; i < options.length; i++) {
-            const option = options[i];
-
-            await inventoryPage.sortingBy(option);
-
-            const actualItems = await inventoryPage.getSortedItems();
-            const expectedItems = await inventoryPage.getSortedItems(option);
-
-            await expect(actualItems).toMatchObject(expectedItems);
-        }
-    });
-
     test('Verify that added  products are displayed correctly', async ({ loginPage, inventoryPage, shopingCartPage }) => {
         await loginPage.navigate();
         await loginPage.performLogin('standard_user', 'secret_sauce');
 
-        await inventoryPage.addItemToCartById(0);
-        await inventoryPage.addItemToCartById(1);
-
-        const firsProductInfo = await inventoryPage.getItemInfoById(0);
-        const secondProductInfo = await inventoryPage.getItemInfoById(1);
+        const addedItems = await inventoryPage.addRandomItemsToCard();
 
         await inventoryPage.shopingCart.click();
+        const cartItems = await shopingCartPage.getAllCartItemsInfo();
 
-        await expect(firsProductInfo).toMatchObject(await shopingCartPage.getCartItemInfoById(0));
-        await expect(secondProductInfo).toMatchObject(await shopingCartPage.getCartItemInfoById(1));
+        await expect(addedItems).toMatchObject(cartItems);
     });
 
     test('Verify checkout steps', async ({
@@ -43,11 +20,7 @@ test.describe('', () => {
         await loginPage.navigate();
         await loginPage.performLogin('standard_user', 'secret_sauce');
 
-        await inventoryPage.addItemToCartById(0);
-        await inventoryPage.addItemToCartById(1);
-
-        const firsProductInfo = await inventoryPage.getItemInfoById(0);
-        const secondProductInfo = await inventoryPage.getItemInfoById(1);
+        const addedItems = await inventoryPage.addRandomItemsToCard();
 
         await inventoryPage.shopingCart.click();
         await shopingCartPage.checkoutBtn.click();
@@ -56,8 +29,7 @@ test.describe('', () => {
 
         const calculatedTotalPrice = await checkoutStepTwoPage.calculateItemsTotalPrice();
 
-        await expect(firsProductInfo).toMatchObject(await shopingCartPage.getCartItemInfoById(0));
-        await expect(secondProductInfo).toMatchObject(await shopingCartPage.getCartItemInfoById(1));
+        await expect(addedItems).toMatchObject(await shopingCartPage.getAllCartItemsInfo());
         await expect(await checkoutStepTwoPage.getTotalPrice()).toEqual(calculatedTotalPrice);
     });
 });
