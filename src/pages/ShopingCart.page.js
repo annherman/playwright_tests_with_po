@@ -11,10 +11,6 @@ export class ShopingCartPage extends BaseSwagLabPage {
 
     get checkoutBtn() { return this.page.locator('#checkout'); }
 
-    async removeCartItemById(id) {
-        await this.cartItems.nth(id).getByRole('button', { name: 'Remove' }).click();
-    }
-
     async removeCartItemByIndex(index) {
         await ShopingCartPage.removeItemFromCart(this.cartItems.nth(index));
     }
@@ -32,7 +28,7 @@ export class ShopingCartPage extends BaseSwagLabPage {
         }));
     }
 
-    static async removeItemFromCart(item) {
+    async removeItemFromCart(item) {
         await item.getByRole('button', { name: 'Remove' }).click();
     }
 }

@@ -20,10 +20,6 @@ export class InventoryPage extends BaseSwagLabPage {
         return this.page.locator('.product_sort_container');
     }
 
-    get activeOption() {
-        return this.page.locator('.active_option').textContent();
-    }
-
     get inventoryItems() {
         return this.page.locator('.inventory_item');
     }
@@ -75,11 +71,11 @@ export class InventoryPage extends BaseSwagLabPage {
         return addedItems;
     }
 
-    static async addItemToCart(item) {
+    async addItemToCart(item) {
         await item.getByRole('button', { name: 'Add to cart' }).click();
     }
 
-    static async getItemInfo(item) {
+    async getItemInfo(item) {
         const name = await item.locator('.inventory_item_name').textContent();
         const desc = await item.locator('.inventory_item_desc').textContent();
         const price = await item.locator('.inventory_item_price').textContent();
